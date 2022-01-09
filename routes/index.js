@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const router = express.Router();
 const darkSouls1 = require("../games/darksouls1");
 const darkSouls2 = require("../games/darksouls2");
+const demonsSouls = require("../games/demonssouls");
 
 router.get("/darksouls1", (req, res) => {
   const games = [];
@@ -54,6 +55,33 @@ router.get("/darksouls2", (req, res) => {
           });
         });
 
+        res.json(games);
+      })
+      .catch((error) => console.log("Something went wrong: ", error));
+  });
+});
+
+router.get("/demonssouls", (req, res) => {
+  const games = [];
+
+  demonsSouls.forEach((game) => {
+    axios
+      .get(game.bossUrl)
+      .then((response) => {
+        const html = response.data;
+        const $ = cheerio.load(html);
+
+        $(".row .col-sm-4", html).each(function () {
+          const bossName = $(this).text().replace(/\n/g, "").trim();
+          const url = $(".special .wiki_link", this).attr("href");
+          const bossImage = $(this).find("img").attr("src");
+          console.log("hey", bossImage);
+          games.push({
+            boss: bossName,
+            url: `${game.baseUrl}${url}`,
+            image: `${game.baseUrl}${bossImage}`,
+          });
+        });
         res.json(games);
       })
       .catch((error) => console.log("Something went wrong: ", error));
