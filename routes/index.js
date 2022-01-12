@@ -7,6 +7,7 @@ const darkSouls2 = require("../games/darksouls2");
 const demonsSouls = require("../games/demonssouls");
 const bloodBorne = require("../games/bloodborne");
 const darkSouls3 = require("../games/darksouls3");
+const sekiro = require("../games/sekiro.js");
 
 router.get("/darksouls1", (req, res) => {
   const games = [];
@@ -137,6 +138,32 @@ router.get("/darksouls3", (req, res) => {
             boss: bossName,
             url: `${game.baseUrl}${url}`,
             image: `${game.baseUrl}${bossImage}`,
+          });
+        });
+        res.json(games);
+      })
+      .catch((error) => console.log("Something went wrong: ", error));
+  });
+});
+
+router.get("/sekiro", (req, res) => {
+  const games = [];
+
+  sekiro.forEach((game) => {
+    axios
+      .get(game.bossUrl)
+      .then((response) => {
+        const html = response.data;
+        const $ = cheerio.load(html);
+
+        $(".col-sm-4").each(function () {
+          const bossName = $(".special", this).text();
+          const url = $("a", this).attr("href");
+          console.log(bossName);
+          games.push({
+            game: game.name,
+            boss: bossName,
+            url: encodeURI(`${game.baseUrl}${url}`),
           });
         });
         res.json(games);
