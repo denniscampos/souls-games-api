@@ -197,8 +197,10 @@ router.get("/eldenring", (req, res) => {
   });
 });
 
-router.get("/games", (req, res) => {
-  res.send("Hello World!");
+router.get("/game/:gameId", (req, res) => {
+  const gameId = req.params.gameId;
+
+  const gameName = sekiro.filter((game) => game.gameId === gameId)[0].gameId;
 });
 
 module.exports = router;

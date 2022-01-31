@@ -1,5 +1,6 @@
 const darkSouls2 = [
   {
+    gameId: "darksouls2",
     name: "Dark Souls 2",
     baseUrl: "https://darksouls2.wiki.fextralife.com",
     bossUrl: "https://darksouls2.wiki.fextralife.com/Bosses",
